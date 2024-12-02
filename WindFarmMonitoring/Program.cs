@@ -1,25 +1,24 @@
+using WindFarmMonitoring.Services;
+using WindFarmMonitoring.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Rejestracja usług
+builder.Services.AddSingleton<MongoDBService>();
+builder.Services.AddSingleton<MqttService>();
 
+// Rejestracja kontrolerów i autoryzacji
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddAuthorization(); // Dodanie usługi autoryzacji
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Uruchomienie MqttService
+var mqttService = app.Services.GetRequiredService<MqttService>();
+await mqttService.StartAsync();
 
+// Middleware
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
+app.UseAuthorization(); // Middleware autoryzacji
 app.MapControllers();
-
 app.Run();

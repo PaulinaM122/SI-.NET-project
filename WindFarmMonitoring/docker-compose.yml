@@ -1,0 +1,24 @@
+version: '3'
+services:
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db
+
+  mosquitto:
+    image: eclipse-mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto:/mosquitto/config
+
+  windfarm-api:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+      - mosquitto
