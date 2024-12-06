@@ -13,7 +13,7 @@ namespace WindFarmMonitoring.Models
         public string SensorType { get; set; }
 
         [BsonElement("sensorId")]
-        public string SensorId { get; set; }
+        public int SensorId { get; set; }
 
         [BsonElement("value")]
         public double Value { get; set; }
@@ -24,7 +24,6 @@ namespace WindFarmMonitoring.Models
         public SensorData() 
         { 
             SensorType = string.Empty;
-            SensorId = string.Empty;
         }
     }
 }
