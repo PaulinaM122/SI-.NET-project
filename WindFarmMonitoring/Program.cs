@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Rejestracja usług
 builder.Services.AddSingleton<MongoDBService>();
 builder.Services.AddSingleton<MqttService>();
+builder.Services.AddAutoMapper(typeof(Program));
 
 // Rejestracja kontrolerów i autoryzacji
 builder.Services.AddControllers();

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WindFarmMonitoring.Data;
+using WindFarmMonitoring.Dto;
 using WindFarmMonitoring.Models;
 
 namespace WindFarmMonitoring.Controllers
@@ -17,18 +18,22 @@ namespace WindFarmMonitoring.Controllers
 
         // GET: api/SensorData
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<List<SensorDataReadDto>> Get([FromQuery] string? sortBy)
         {
-            var data = await _mongoDBService.GetSensorDataAsync();
-            return Ok(data);
+            var data = await _mongoDBService.GetSensorDataAsync(sortBy);
+            return data;
         }
 
         // GET: api/SensorData/filter
-        [HttpGet("filter")]
-        public async Task<IActionResult> GetFiltered([FromQuery] string sensorType, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
+        [HttpGet("filter")] 
+        public async Task<List<SensorDataReadDto>> GetFiltered(
+            [FromQuery] string? sensorType,
+            [FromQuery] DateTime? startDate,
+            [FromQuery] DateTime? endDate,
+            [FromQuery] string? sortBy)
         {
-            var data = await _mongoDBService.GetFilteredDataAsync(sensorType, startDate, endDate);
-            return Ok(data);
+            var data = await _mongoDBService.GetFilteredDataAsync(sensorType, startDate, endDate, sortBy);
+            return data;
         }
 
         // POST: api/SensorData
