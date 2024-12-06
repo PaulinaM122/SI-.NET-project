@@ -3,23 +3,19 @@ using WindFarmMonitoring.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Rejestracja usług
 builder.Services.AddSingleton<MongoDBService>();
 builder.Services.AddSingleton<MqttService>();
 builder.Services.AddAutoMapper(typeof(Program));
 
-// Rejestracja kontrolerów i autoryzacji
 builder.Services.AddControllers();
-builder.Services.AddAuthorization(); // Dodanie usługi autoryzacji
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Uruchomienie MqttService
 var mqttService = app.Services.GetRequiredService<MqttService>();
 await mqttService.StartAsync();
 
-// Middleware
 app.UseHttpsRedirection();
-app.UseAuthorization(); // Middleware autoryzacji
+app.UseAuthorization();
 app.MapControllers();
 app.Run();
