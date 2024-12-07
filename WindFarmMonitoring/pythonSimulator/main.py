@@ -16,7 +16,7 @@ def generate_data(sensor_type):
         return random.randint(0, 3000)
 
 
-def on_connect(client, userdata, flags, reasonCode, properties):
+def on_connect(client, userdata, flags, reasonCode):
     print(f"Połączono z brokerem MQTT. Kod powrotu: {reasonCode}")
 
 
@@ -25,14 +25,15 @@ def on_publish(client, userdata, mid):
 
 
 def main():
-    client = mqtt.Client("SensorSimulator", protocol=mqtt.MQTTv5)
+    # Utworzenie klienta MQTT
+    client = mqtt.Client("SensorSimulator", protocol=mqtt.MQTTv311)
 
     # Przypisanie callbacków
     client.on_connect = on_connect
     client.on_publish = on_publish
 
     # Połączenie z brokerem MQTT
-    client.connect("localhost", 1883, 60)
+    client.connect("mqtt", 1883, 60)
 
     client.loop_start()
 
@@ -52,7 +53,7 @@ def main():
             "Value": value,
             "Timestamp": datetime.utcnow().isoformat()
         }
- 
+
         client.publish(topic, json.dumps(message))
         print(f"Wysłano: {message} do tematu: {topic}")
 

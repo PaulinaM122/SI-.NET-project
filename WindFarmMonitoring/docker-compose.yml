@@ -1,24 +1,53 @@
-version: '3'
+version: '3.8'
+
 services:
-  mongo:
-    image: mongo
+  backend:
+    build:
+      context: ..
+      dockerfile: WindFarmMonitoring/Dockerfile
     ports:
-      - "27017:27017"
-    volumes:
-      - ./data:/data/db
-
-  mosquitto:
-    image: eclipse-mosquitto
-    ports:
-      - "1883:1883"
-      - "9001:9001"
-    volumes:
-      - ./mosquitto:/mosquitto/config
-
-  windfarm-api:
-    build: .
-    ports:
-      - "5000:5000"
+      - "5000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - mongo
-      - mosquitto
+      - mqtt
+    networks:
+      - windfarm-network
+
+  python-simulator:
+    build:
+      context: ./pythonSimulator 
+    container_name: python-simulator
+    depends_on:
+      - mqtt
+    networks:
+      - windfarm-network
+    restart: always
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - windfarm-network
+    volumes:
+      - mongo_data:/data/db
+
+  mqtt:
+    image: eclipse-mosquitto:latest
+    container_name: mqtt
+    ports:
+      - "1884:1883"
+    networks:
+      - windfarm-network
+    volumes:
+      - C:/Users/pauli/OneDrive/Pulpit/CLanguage/WindFarmMonitoring/WindFarmMonitoring/config/mosquitto.config:/mosquitto/config/mosquitto.conf
+
+networks:
+  windfarm-network:
+    driver: bridge
+
+volumes:
+  mongo_data:

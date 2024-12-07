@@ -23,7 +23,7 @@ namespace WindFarmMonitoring.Services
 
             var mqttOptions = new MqttClientOptionsBuilder()
                 .WithClientId("WindFarmMonitoringClient")
-                .WithTcpServer("localhost", 1883)
+                .WithTcpServer("mqtt", 1883)
                 .WithCleanSession()
                 .Build();
 
